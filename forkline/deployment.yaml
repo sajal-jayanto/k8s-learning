@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: forkline-api
+spec:
+  replicas: 2
+
+  selector:
+    matchLabels:
+      app: forkline-api
+
+  template:
+    metadata:
+      labels:
+        app: forkline-api
+
+    spec:
+      containers:
+        - name: forkline-api
+          image: forkline-api:50e3e6e
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 9000
+
+          envFrom:
+            - configMapRef:
+                name: forkline-config
+
+          env:
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: forkline-secret
+                  key: DB_PASSWORD
+
+
+# minikube image load forkline-api:tag
